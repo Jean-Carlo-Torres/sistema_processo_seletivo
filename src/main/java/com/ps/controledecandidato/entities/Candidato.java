@@ -8,22 +8,32 @@ import jakarta.validation.constraints.NotNull;
 @Entity
 @Table(name = "candidados")
 public class Candidato {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @NotBlank
     private String nome;
+
     @NotBlank
+    @Column(unique = true)
     private String email;
+
     @NotBlank
+    @Column(unique = true)
     private String telefone;
+
     private String experiencia;
     private String escolaridade;
     private String genero;
     private String dataNascimento;
+
     @NotNull
     @Min(0)
     private Double pretensaoSalarial;
+
+    private String situacao;
 
     public Candidato() {
     }
@@ -37,6 +47,19 @@ public class Candidato {
         this.genero = genero;
         this.dataNascimento = dataNascimento;
         this.pretensaoSalarial = pretensaoSalarial;
+        this.situacao = analisarCandidato();
+    }
+
+    public String analisarCandidato() {
+        double salarioBase = 8000.0;
+        if (salarioBase > pretensaoSalarial) {
+            situacao = "LIGAR PARA O CANDIDATO";
+        } else if (salarioBase == pretensaoSalarial) {
+            situacao = "LIGAR PARA O CANDIDATO COM CONTRA PROPOSTA";
+        } else {
+            situacao = "AGUARDANDO RESULTADO DOS DEMAIS CANDIDATOS";
+        }
+        return situacao;
     }
 
     public Long getId() {
@@ -109,5 +132,10 @@ public class Candidato {
 
     public void setPretensaoSalarial(@NotNull Double pretensaoSalarial) {
         this.pretensaoSalarial = pretensaoSalarial;
+        this.situacao = analisarCandidato();
+    }
+
+    public String getSituacao() {
+        return situacao;
     }
 }
