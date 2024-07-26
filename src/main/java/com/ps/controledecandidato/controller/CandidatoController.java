@@ -22,4 +22,31 @@ public class CandidatoController {
     public Iterable<Candidato> obterCandidatos() {
         return repository.findAll();
     }
+
+    @GetMapping("/{id}")
+    public Candidato obterCandidatoPorId(@PathVariable Long id) {
+        return repository.findById(id).orElse(null);
+    }
+
+    @PutMapping("/{id}")
+    public Candidato atualizarCandidato(@PathVariable Long id, @RequestBody @Valid Candidato candidatoAtualizado) {
+        Candidato candidatoExistente = repository.findById(id).orElse(null);
+        if (candidatoExistente != null) {
+            candidatoExistente.setNome(candidatoAtualizado.getNome());
+            candidatoExistente.setEmail(candidatoAtualizado.getEmail());
+            candidatoExistente.setTelefone(candidatoAtualizado.getTelefone());
+            candidatoExistente.setExperiencia(candidatoAtualizado.getExperiencia());
+            candidatoExistente.setEscolaridade(candidatoAtualizado.getEscolaridade());
+            candidatoExistente.setGenero(candidatoAtualizado.getGenero());
+            candidatoExistente.setDataNascimento(candidatoAtualizado.getDataNascimento());
+            candidatoExistente.setPretensaoSalarial(candidatoAtualizado.getPretensaoSalarial());
+            return repository.save(candidatoExistente);
+        }
+        return null;
+    }
+
+    @DeleteMapping("/{id}")
+    public void deletarCandidato(@PathVariable Long id) {
+        repository.deleteById(id);
+    }
 }
