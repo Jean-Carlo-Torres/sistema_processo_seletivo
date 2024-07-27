@@ -6,6 +6,9 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @RestController
 @RequestMapping("/candidatos")
 public class CandidatoController {
@@ -27,6 +30,23 @@ public class CandidatoController {
     public Candidato obterCandidatoPorId(@PathVariable Long id) {
         return repository.findById(id).orElse(null);
     }
+
+    @GetMapping("/candidatosselecionados")
+    public Iterable<Candidato> obterCandidatosSelecionados() {
+        List<Candidato> candidatosSelecionados = new ArrayList<>();
+        for (Candidato candidato : repository.findAll()) {
+            String situacao = candidato.getSituacao();
+            if ("LIGAR PARA O CANDIDATO".equals(situacao) ||
+                    "LIGAR PARA O CANDIDATO COM CONTRA PROPOSTA".equals(situacao)) {
+                candidatosSelecionados.add(candidato);
+            }
+            if (candidatosSelecionados.size() >= 5) {
+                break;
+            }
+        }
+        return candidatosSelecionados;
+    }
+
 
     @PutMapping("/{id}")
     public Candidato atualizarCandidato(@PathVariable Long id, @RequestBody @Valid Candidato candidatoAtualizado) {
