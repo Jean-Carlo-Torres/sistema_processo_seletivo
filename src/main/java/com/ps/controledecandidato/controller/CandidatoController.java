@@ -21,6 +21,16 @@ public class CandidatoController {
     @Autowired
     private CandidatoRepository repository;
 
+    @Operation(summary = "Criar um novo candidato")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Candidato criado com sucesso"),
+            @ApiResponse(responseCode = "400", description = "Requisição inválida")
+    })
+    @PostMapping
+    public Candidato criarCandidato(@RequestBody @Valid Candidato candidato) {
+        return repository.save(candidato);
+    }
+
     @Operation(summary = "Obter todos os candidatos")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Lista de todos os candidatos"),
